@@ -1,2 +1,5 @@
-CIRCUITPY_WIFI_SSID = ""
-CIRCUITPY_WIFI_PASSWORD = ""
+# network creds in order of priority; delimiter (e.g. :) is first character; SSID password pairs; double delimiter between pairs
+NETWORKS = ":TWINKLE:$tars4Casa::CAMPBELL:wifi4Casa::Dave's iPhone:5dg1h7kt43uf2"
+
+#CIRCUITPY_WIFI_SSID = "CAMPBELL"
+#CIRCUITPY_WIFI_PASSWORD = "wifi4Casa"
