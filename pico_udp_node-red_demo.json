@@ -1,0 +1,169 @@
+[
+    {
+        "id": "6811931e9af3d047",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a29cbc4e305e1b62",
+        "type": "udp out",
+        "z": "6811931e9af3d047",
+        "name": "",
+        "addr": "192.168.0.77",
+        "iface": "",
+        "port": "5005",
+        "ipv": "udp4",
+        "outport": "",
+        "base64": false,
+        "multicast": "false",
+        "x": 930,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8054969e4d8173bb",
+        "type": "udp in",
+        "z": "6811931e9af3d047",
+        "name": "",
+        "iface": "",
+        "port": "5005",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "f8f95a9d1b83b5b0"
+            ]
+        ]
+    },
+    {
+        "id": "28bd8985537817f6",
+        "type": "debug",
+        "z": "6811931e9af3d047",
+        "name": "received",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d5dc4da405068a85",
+        "type": "function",
+        "z": "6811931e9af3d047",
+        "name": "generate data",
+        "func": "let pin = context.get('pin') || 0;\nlet pwm = context.get('pwm') || 0;\nlet random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;\n\nmsg.payload = Buffer.from(JSON.stringify({ \"pin\": pin, \"pwm\": pwm })+'\\n');\n\ncontext.set('pin',random(0,1));\ncontext.set('pwm',((pwm + random(0,4)*4096)) % 65536);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 640,
+        "y": 240,
+        "wires": [
+            [
+                "a29cbc4e305e1b62",
+                "b8e18854c71180e1"
+            ]
+        ]
+    },
+    {
+        "id": "7b9278bbc05dadd4",
+        "type": "inject",
+        "z": "6811931e9af3d047",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 430,
+        "y": 240,
+        "wires": [
+            [
+                "d5dc4da405068a85"
+            ]
+        ]
+    },
+    {
+        "id": "f8f95a9d1b83b5b0",
+        "type": "function",
+        "z": "6811931e9af3d047",
+        "name": "parse",
+        "func": "// convert buffer to object...\nmsg.payload = JSON.parse(msg.payload.toString('utf-8').replace(/\\n/,''));\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 180,
+        "wires": [
+            [
+                "28bd8985537817f6"
+            ]
+        ]
+    },
+    {
+        "id": "dbb1163a85a7f2a7",
+        "type": "debug",
+        "z": "6811931e9af3d047",
+        "name": "sent",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "b8e18854c71180e1",
+        "type": "function",
+        "z": "6811931e9af3d047",
+        "name": "toString",
+        "func": "msg.payload = msg.payload.toString('utf-8');\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 320,
+        "wires": [
+            [
+                "dbb1163a85a7f2a7"
+            ]
+        ]
+    }
+]
